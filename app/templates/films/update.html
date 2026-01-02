@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Modifica "{{ film['title'] }}"</h1>
+  <form method="post">
+    <label for="title">Titolo</label>
+    <input name="title" id="title" value="{{ request.form.get('title') or film['title'] }}" required>
+
+    <label for="year">Anno</label>
+    <input name="year" id="year" type="number" min="1888" value="{{ request.form.get('year') or film['year'] }}">
+
+    <label for="poster_url">Poster (URL)</label>
+    <input name="poster_url" id="poster_url" type="url" value="{{ request.form.get('poster_url') or film['poster_url'] }}">
+
+    <label for="status">Stato</label>
+    <select name="status" id="status">
+      <option value="watchlist" {% if (request.form.get('status') or film['status']) == 'watchlist' %}selected{% endif %}>Da vedere</option>
+      <option value="seen" {% if (request.form.get('status') or film['status']) == 'seen' %}selected{% endif %}>Visto</option>
+    </select>
+
+    <label for="watched_date">Data visione (YYYY-MM-DD)</label>
+    <input name="watched_date" id="watched_date" type="date" value="{{ request.form.get('watched_date') or (film['watched_date'] and film['watched_date'].strftime('%Y-%m-%d')) }}">
+
+    <input type="submit" value="Salva Modifiche">
+  </form>
+
+  <hr>
+
+  <form action="{{ url_for('main.delete', id=film['id']) }}" method="post">
+    <input type="submit" value="Elimina Film" onclick="return confirm('Sei sicuro di voler eliminare questo film?')">
+  </form>
+{% endblock %}
