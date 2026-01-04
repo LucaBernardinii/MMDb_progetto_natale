@@ -1,44 +1,57 @@
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
-DROP TABLE IF EXISTS film;
-
-CREATE TABLE user (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at DATETIME DEFAULT (datetime('now')),
+    is_active INTEGER NOT NULL DEFAULT 1
 );
 
-CREATE TABLE post (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  title TEXT NOT NULL,
-  body TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+CREATE TABLE IF NOT EXISTS movies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    omdb_id TEXT UNIQUE,
+    title TEXT NOT NULL,
+    year TEXT,
+    type TEXT,
+    additional_json TEXT,
+    created_at DATETIME DEFAULT (datetime('now'))
 );
 
-CREATE TABLE film (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  title TEXT NOT NULL,
-  year INTEGER,
-  status TEXT NOT NULL DEFAULT 'watchlist',
-  watched_date DATE,
-  poster_url TEXT,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+CREATE INDEX IF NOT EXISTS idx_movies_omdb_id ON movies(omdb_id);
+
+CREATE TABLE IF NOT EXISTS diary_entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    movie_id INTEGER NOT NULL,
+    watched_on DATE NOT NULL,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 10),
+    comment TEXT,
+    created_at DATETIME DEFAULT (datetime('now')),
+    updated_at DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
 );
 
-INSERT INTO user (username, password) VALUES ('admin', 'adminpass');
-INSERT INTO user (username, password) VALUES ('student', 'studentpass');
+CREATE INDEX IF NOT EXISTS idx_diary_user_watched_on ON diary_entries(user_id, watched_on);
 
-INSERT INTO post (author_id, title, body) VALUES (1, 'Welcome to the Blog', 'This is the first post on the blog!');
-INSERT INTO post (author_id, title, body) VALUES (2, 'Hello World', 'This is a post by a student.');
-INSERT INTO post (author_id, title, body) VALUES (1, 'Second Post', 'Another post by the admin user.');
-INSERT INTO post (author_id, title, body) VALUES (2, 'Learning SQL', 'This post discusses basic SQL commands.');
-INSERT INTO post (author_id, title, body) VALUES (1, 'Database Design', 'An introduction to designing databases.');
+CREATE TABLE IF NOT EXISTS watchlists (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT (datetime('now')),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
--- Sample films
-INSERT INTO film (author_id, title, year, status, watched_date, poster_url) VALUES (1, 'The Matrix', 1999, 'seen', '2020-12-01', 'https://m.media-amazon.com/images/M/MV5BNzQzOTk3NzAt.jpg');
-INSERT INTO film (author_id, title, year, status, poster_url) VALUES (2, 'Interstellar', 2014, 'watchlist', 'https://m.media-amazon.com/images/M/MV5BMjIxNTU4MzY.jpg');
-INSERT INTO film (author_id, title, year, status, poster_url) VALUES (1, 'Inception', 2010, 'watchlist', 'https://m.media-amazon.com/images/M/MV5B.jpg');
+CREATE TABLE IF NOT EXISTS watchlist_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    watchlist_id INTEGER NOT NULL,
+    movie_id INTEGER NOT NULL,
+    added_at DATETIME DEFAULT (datetime('now')),
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    UNIQUE (watchlist_id, movie_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_watchlist_items_watchlist_id ON watchlist_items(watchlist_id);

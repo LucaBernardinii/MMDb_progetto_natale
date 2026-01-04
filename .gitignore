@@ -1,7 +1,3 @@
 .venv
 instance
 __pycache__
-repositories
-write_test.py
-setup_db.py
-auth.pydb.py

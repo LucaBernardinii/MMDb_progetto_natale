@@ -14,20 +14,12 @@ def create_app():
         # 'dev' va bene per sviluppare, ma in produzione andrà cambiata.
         SECRET_KEY='dev',
         # Diciamo a Flask dove salvare il file del database SQLite
-        DATABASE=os.path.join(app.instance_path, 'mmdb.sqlite'),
+        DATABASE=os.path.join(app.instance_path, 'blog.sqlite'),
     )
-
-    # --- AGGIUNGI QUESTO ---
-    from . import db
-    db.init_app(app)
-    # -----------------------
 
     # --- REGISTRAZIONE BLUEPRINTS ---
     from . import main
     app.register_blueprint(main.bp)
-    
-    from . import auth
-    app.register_blueprint(auth.bp)
     # --------------------------------
 
     return app

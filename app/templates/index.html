@@ -1,34 +1,17 @@
+<!-- app/templates/index.html -->
 {% extends 'base.html' %}
 
+{% block title %}Home - Blog{% endblock %}
+
 {% block content %}
-  <h1>MMDb - I tuoi Film</h1>
-  
-  <!-- Mostra il tasto 'Nuovo' solo se sei loggato -->
-  {% if g.user %}
-    <a href="{{ url_for('main.create') }}" class="btn">Aggiungi un film</a>
-    <hr>
-  {% endif %}
-
-  {% for film in films %}
-    <article>
-      <header>
-          <h2>{{ film['title'] }} {% if film['year'] %}({{ film['year'] }}){% endif %}</h2>
-          <small>Aggiunto da <strong>{{ film['username'] }}</strong> il {{ film['created'].strftime('%Y-%m-%d') }}</small>
-      </header>
-      
-      <p>
-        Stato: <strong>{{ film['status'] }}</strong>
-        {% if film['watched_date'] %} - Visto il {{ film['watched_date'].strftime('%Y-%m-%d') }}{% endif %}
-      </p>
-
-      {% if film['poster_url'] %}
-        <p>Poster: <a href="{{ film['poster_url'] }}" target="_blank">Link esterno</a></p>
-      {% endif %}
-
-      {% if g.user and g.user['id'] == film['author_id'] %}
-        <a href="{{ url_for('main.update', id=film['id']) }}">Modifica</a>
-      {% endif %}
-    </article>
-    <hr>
-  {% endfor %}
+    <h2>Benvenuti!</h2>
+    <p>Questo è il blog ufficiale del nostro corso di informatica.</p>
+    
+    <!-- Esempio di logica nel template -->
+    <h3>Ultimi aggiornamenti:</h3>
+    <ul>
+    {% for news in notizie %}
+        <li>{{ news }}</li>
+    {% endfor %}
+    </ul>
 {% endblock %}
