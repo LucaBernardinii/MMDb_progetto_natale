@@ -21,5 +21,11 @@ def create_app():
     from . import main
     app.register_blueprint(main.bp)
     # --------------------------------
+    
+    from . import auth
+    app.register_blueprint(auth.bp)
 
+    from . import db
+    db.init_app(app)
+    
     return app
