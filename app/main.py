@@ -1,18 +1,25 @@
-# app/main.py
-from flask import Blueprint, render_template
+from flask import (
+    Blueprint, flash, g, redirect, render_template, request, url_for
+)
+from app.repositories import diary_repository, watchlist_repository
 
+# Usiamo 'main' perché è il blueprint principale del sito
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
 def index():
-    # Simuliamo dei dati presi da un database (per ora finti)
-    notizie_fittizie = [
-        "Abbiamo imparato i Blueprint",
-        "Configurato Jinja2",
-        "Il progetto sta prendendo forma"
-    ]
-    # Passiamo la variabile 'notizie' al template
-    return render_template('index.html', notizie=notizie_fittizie)
+    # Mostra la dashboard MMDb. Se l'utente è loggato, mostra conteggi personali.
+    stats = {}
+
+    if g.user:
+        uid = g.user['id']
+        diary = diary_repository.get_entries_for_user(uid)
+        wl = watchlist_repository.get_or_create_watchlist(uid)
+        wl_items = watchlist_repository.get_items(wl['id']) if wl else []
+        stats['diary_count'] = len(diary)
+        stats['watchlist_count'] = len(wl_items)
+
+    return render_template('index.html', stats=stats)
 
 @bp.route('/about')
 def about():

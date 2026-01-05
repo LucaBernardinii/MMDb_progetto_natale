@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Diario{% endblock %}
+
+{% block content %}
+  <h2>Il mio diario</h2>
+  <a href="{{ url_for('diary.add') }}">Aggiungi voce</a>
+  {% if entries %}
+    <ul>
+      {% for e in entries %}
+        <li>
+          <strong>{{ e['title'] }}</strong> - {{ e['watched_on'] }}
+          {% if e['rating'] %} - voto: {{ e['rating'] }}{% endif %}
+          {% if e['comment'] %}
+            <div>{{ e['comment'] }}</div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Non hai ancora registrato film visti.</p>
+  {% endif %}
+{% endblock %}

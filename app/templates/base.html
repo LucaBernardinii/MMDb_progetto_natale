@@ -3,7 +3,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Blog Scolastico{% endblock %}</title>
+    <title>{% block title %}MMDb - Movie Diary{% endblock %}</title>
     <!-- Qui potremmo linkare un CSS -->
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
@@ -13,7 +13,7 @@
 </head>
 <body>
     <nav>
-        <h1>Blog 5^A</h1>
+        <h1>MMDb - Movie Diary</h1>
         <!-- url_for genera l'URL dal nome della funzione -->
         <!-- Sintassi Blueprint: 'nome_blueprint.nome_funzione' -->
         <a href="{{ url_for('main.index') }}">Home</a>
@@ -21,11 +21,11 @@
     </nav>
     <hr>
     <nav>
-      <a href="{{ url_for('main.index') }}">Blog Scolastico</a>
-        
-      <!-- LOGICA DINAMICA DELLA NAVBAR -->
+      <a href="{{ url_for('main.index') }}">MMDb</a>
       {% if g.user %}
         <!-- Se g.user esiste, l'utente è loggato -->
+        <a href="{{ url_for('diary.index') }}">Diario</a>
+        <a href="{{ url_for('watchlist.index') }}">Watchlist</a>
         <span>Ciao, {{ g.user['username'] }}</span>
         <a href="{{ url_for('auth.logout') }}">Logout</a>
       {% else %}
@@ -51,7 +51,7 @@
 
     <hr>
     <footer>
-        <small>&copy; 2024 - Classe 5^A Informatica</small>
+        <small>&copy; 2025 - MMDb</small>
     </footer>
 </body>
 </html>

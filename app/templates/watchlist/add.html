@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Aggiungi a Watchlist{% endblock %}
+
+{% block content %}
+  <h2>Aggiungi film alla watchlist</h2>
+  <form method="post">
+    <label for="title">Titolo</label>
+    <input name="title" id="title">
+
+    <label for="omdb_id">OMDb ID (opzionale)</label>
+    <input name="omdb_id" id="omdb_id">
+
+    <input type="submit" value="Aggiungi">
+  </form>
+{% endblock %}

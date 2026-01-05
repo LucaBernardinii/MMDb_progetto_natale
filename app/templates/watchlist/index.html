@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Watchlist{% endblock %}
+
+{% block content %}
+  <h2>La mia Watchlist</h2>
+  <a href="{{ url_for('watchlist.add') }}">Aggiungi film</a>
+  {% if items %}
+    <ul>
+      {% for it in items %}
+        <li>
+          <strong>{{ it['title'] }}</strong> - aggiunto: {{ it['added_at'] }}
+          <form method="post" action="{{ url_for('watchlist.remove') }}" style="display:inline">
+            <input type="hidden" name="movie_id" value="{{ it['movie_id'] }}">
+            <input type="submit" value="Rimuovi">
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>La tua watchlist è vuota.</p>
+  {% endif %}
+{% endblock %}

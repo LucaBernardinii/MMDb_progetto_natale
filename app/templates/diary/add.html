@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Aggiungi al Diario{% endblock %}
+
+{% block content %}
+  <h2>Aggiungi voce al diario</h2>
+  <form method="post">
+    <label for="title">Titolo</label>
+    <input name="title" id="title" required>
+
+    <label for="omdb_id">OMDb ID (opzionale)</label>
+    <input name="omdb_id" id="omdb_id">
+
+    <label for="watched_on">Data vista</label>
+    <input type="date" name="watched_on" id="watched_on" required>
+
+    <label for="rating">Voto (1-10)</label>
+    <input type="number" name="rating" id="rating" min="1" max="10">
+
+    <label for="comment">Commento</label>
+    <textarea name="comment" id="comment"></textarea>
+
+    <input type="submit" value="Aggiungi">
+  </form>
+{% endblock %}

@@ -3,6 +3,7 @@ from flask import (
 )
 # werkzeug.security ci offre strumenti professionali per la crittografia
 from werkzeug.security import check_password_hash, generate_password_hash
+from functools import wraps
 from app.repositories import user_repository
 
 # url_prefix='/auth' significa che tutte le route qui inizieranno con /auth
@@ -27,12 +28,15 @@ def load_logged_in_user():
 def register():
     # CASO 2: POST (L'utente ha inviato i dati)
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
         error = None
 
         if not username:
             error = 'Username obbligatorio.'
+        elif not email:
+            error = 'Email obbligatoria.'
         elif not password:
             error = 'Password obbligatoria.'
 
@@ -41,12 +45,12 @@ def register():
             hashed_pwd = generate_password_hash(password)
             
             # Chiamiamo il Repository
-            success = user_repository.create_user(username, hashed_pwd)
+            success = user_repository.create_user(username, hashed_pwd, email)
             
             if success:
                 return redirect(url_for('auth.login'))
             else:
-                error = f"L'utente {username} è già registrato."
+                error = 'Username o email già registrati.'
 
         flash(error)
 
@@ -66,7 +70,7 @@ def login():
         if user is None:
             error = 'Username non corretto.'
         # 2. Verifichiamo la password
-        elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(user['password_hash'], password):
             error = 'Password non corretta.'
 
         if error is None:
@@ -82,6 +86,16 @@ def login():
         flash(error)
 
     return render_template('auth/login.html')
+
+def login_required(view):
+    """Decorator semplice per proteggere le rotte che richiedono login."""
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+    return wrapped_view
+
 
 @bp.route('/logout')
 def logout():
