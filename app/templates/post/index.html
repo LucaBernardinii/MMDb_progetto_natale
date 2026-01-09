@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Tutti i Post{% endblock %}
+
+{% block content %}
+  <h2>Condivisioni e Opinioni sui Film</h2>
+  
+  {% if not posts_with_likes %}
+    <p>Nessun post ancora. Sii il primo a condividere!</p>
+  {% else %}
+    {% for item in posts_with_likes %}
+      <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+        <h4><a href="{{ url_for('post.view', post_id=item.post.id) }}">{{ item.post.title }}</a></h4>
+        <small>di <strong>{{ item.post.username }}</strong> il {{ item.post.created_at }}</small>
+        
+        <p>{{ item.post.content }}</p>
+        
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+          <small>
+            👍 {{ item.likes_count }} like | 💬 {{ item.comments_count }} commenti
+          </small>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

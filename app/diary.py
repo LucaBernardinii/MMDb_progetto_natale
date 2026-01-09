@@ -15,7 +15,6 @@ def index():
 def add():
     if request.method == 'POST':
         title = request.form.get('title')
-        omdb_id = request.form.get('omdb_id') or None
         watched_on = request.form.get('watched_on')
         rating = request.form.get('rating') or None
         comment = request.form.get('comment') or None
@@ -24,11 +23,9 @@ def add():
             flash('Titolo e data sono obbligatori.')
         else:
             # find or create movie
-            movie = None
-            if omdb_id:
-                movie = movie_repository.get_by_omdb_id(omdb_id)
+            movie = movie_repository.get_by_title(title)
             if movie is None:
-                movie = movie_repository.create(omdb_id, title)
+                movie = movie_repository.create(title)
             diary_repository.add_entry(g.user['id'], movie['id'], watched_on, rating, comment)
             return redirect(url_for('diary.index'))
 

@@ -36,9 +36,10 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
 
     # register new blueprints
-    from . import diary, watchlist
+    from . import diary, watchlist, post
     app.register_blueprint(diary.bp)
     app.register_blueprint(watchlist.bp)
+    app.register_blueprint(post.bp)
 
     from . import db
     db.init_app(app)

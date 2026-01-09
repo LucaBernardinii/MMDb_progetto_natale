@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Post su {{ movie.title }}{% endblock %}
+
+{% block content %}
+  <h2>Post su: <strong>{{ movie.title }}</strong></h2>
+  
+  {% if g.user %}
+    <a href="{{ url_for('post.create', movie_id=movie.id) }}" style="padding: 8px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">Crea un post</a>
+  {% else %}
+    <p><a href="{{ url_for('auth.login') }}">Accedi</a> per condividere la tua opinione su questo film.</p>
+  {% endif %}
+  
+  <hr>
+  
+  {% if not posts_with_likes %}
+    <p>Nessun post ancora su questo film.</p>
+  {% else %}
+    {% for item in posts_with_likes %}
+      <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <strong>{{ item.post.username }}</strong>
+            <small style="color: #666;">{{ item.post.created_at }}</small>
+          </div>
+          {% if g.user and g.user.id == item.post.user_id %}
+            <div>
+              <a href="{{ url_for('post.edit', post_id=item.post.id) }}" style="text-decoration: none;">✏️</a>
+              <form method="POST" action="{{ url_for('post.delete', post_id=item.post.id) }}" style="display: inline;" onsubmit="return confirm('Sei sicuro?');">
+                <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 16px;">🗑️</button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+        
+        <p style="margin-top: 10px;">{{ item.post.content }}</p>
+        
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+          {% if g.user %}
+            <form method="POST" action="{{ url_for('post.like', post_id=item.post.id) }}" style="display: inline;">
+              <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 16px;">
+                {% if item.user_liked %}👍{% else %}🤍{% endif %}
+              </button>
+            </form>
+          {% endif %}
+          <small>{{ item.likes_count }} like | <a href="{{ url_for('post.view', post_id=item.post.id) }}">{{ item.comments_count }} commenti</a></small>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

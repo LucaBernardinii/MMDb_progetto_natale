@@ -26,10 +26,12 @@
         <!-- Se g.user esiste, l'utente è loggato -->
         <a href="{{ url_for('diary.index') }}">Diario</a>
         <a href="{{ url_for('watchlist.index') }}">Watchlist</a>
+        <a href="{{ url_for('post.all_posts') }}">Post</a>
         <span>Ciao, {{ g.user['username'] }}</span>
         <a href="{{ url_for('auth.logout') }}">Logout</a>
       {% else %}
         <!-- Altrimenti mostriamo i tasti di accesso -->
+        <a href="{{ url_for('post.all_posts') }}">Post</a>
         <a href="{{ url_for('auth.register') }}">Registrati</a>
         <a href="{{ url_for('auth.login') }}">Login</a>
       {% endif %}

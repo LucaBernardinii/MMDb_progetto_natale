@@ -16,16 +16,12 @@ def index():
 def add():
     if request.method == 'POST':
         title = request.form.get('title')
-        omdb_id = request.form.get('omdb_id') or None
-        if not title and not omdb_id:
-            flash('Titolo o OMDb id richiesto.')
+        if not title:
+            flash('Titolo richiesto.')
         else:
-            movie = None
-            if omdb_id:
-                movie = movie_repository.get_by_omdb_id(omdb_id)
+            movie = movie_repository.get_by_title(title)
             if movie is None:
-                # prefer title when omdb_id not provided
-                movie = movie_repository.create(omdb_id, title)
+                movie = movie_repository.create(title)
             wl = watchlist_repository.get_or_create_watchlist(g.user['id'])
             watchlist_repository.add_item(wl['id'], movie['id'])
             return redirect(url_for('watchlist.index'))

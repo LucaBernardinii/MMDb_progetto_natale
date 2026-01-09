@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Post{% endblock %}
+
+{% block content %}
+  <h2>{{ post.title }}</h2>
+  
+  <div style="border: 1px solid #ddd; padding: 20px; border-radius: 5px; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+      <div>
+        <strong>{{ post.username }}</strong>
+        <small style="color: #666;">{{ post.created_at }}</small>
+        {% if post.updated_at %}
+          <small style="color: #999;">(modificato)</small>
+        {% endif %}
+      </div>
+      {% if g.user and g.user.id == post.user_id %}
+        <div>
+          <a href="{{ url_for('post.edit', post_id=post.id) }}" style="text-decoration: none;">✏️ Modifica</a> |
+          <form method="POST" action="{{ url_for('post.delete', post_id=post.id) }}" style="display: inline;" onsubmit="return confirm('Sei sicuro di voler eliminare questo post?');">
+            <button type="submit" style="background: none; border: none; cursor: pointer; text-decoration: none; color: #dc3545;">🗑️ Elimina</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+    
+    <p style="margin: 15px 0; line-height: 1.6;">{{ post.content }}</p>
+    
+    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+      {% if g.user %}
+        <form method="POST" action="{{ url_for('post.like', post_id=post.id) }}" style="display: inline;">
+          <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 18px;">
+            {% if user_liked %}👍{% else %}🤍{% endif %}
+          </button>
+        </form>
+      {% endif %}
+      <strong>{{ likes_count }} like</strong>
+    </div>
+  </div>
+  
+  <h3>Commenti ({{ comments|length }})</h3>
+  
+  {% if g.user %}
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+      <form method="post" action="{{ url_for('post.add_comment', post_id=post.id) }}">
+        <label for="content">Aggiungi un commento:</label>
+        <textarea name="content" id="content" rows="3" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+        <input type="submit" value="Commenta" style="margin-top: 10px; padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      </form>
+    </div>
+  {% else %}
+    <p><a href="{{ url_for('auth.login') }}">Accedi</a> per commentare.</p>
+  {% endif %}
+  
+  {% if comments %}
+    {% for comment in comments %}
+      <div style="border: 1px solid #eee; padding: 12px; margin-bottom: 10px; border-radius: 4px; background-color: #fafafa;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <strong>{{ comment.username }}</strong>
+            <small style="color: #666;">{{ comment.created_at }}</small>
+          </div>
+          {% if g.user and g.user.id == comment.user_id %}
+            <div>
+              <a href="{{ url_for('post.edit_comment', comment_id=comment.id) }}" style="text-decoration: none;">✏️</a>
+              <form method="POST" action="{{ url_for('post.delete_comment', comment_id=comment.id) }}" style="display: inline;" onsubmit="return confirm('Sei sicuro?');">
+                <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 14px;">🗑️</button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+        <p style="margin-top: 8px;">{{ comment.content }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="color: #666;">Nessun commento ancora.</p>
+  {% endif %}
+  
+  <hr>
+  <a href="{{ url_for('post.movie_posts', movie_id=post.movie_id) }}">← Torna al film</a>
+{% endblock %}

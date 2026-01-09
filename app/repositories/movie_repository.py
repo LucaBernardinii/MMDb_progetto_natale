@@ -7,22 +7,27 @@ class MovieRepository:
         return db.execute('SELECT * FROM movies WHERE id = ?', (movie_id,)).fetchone()
 
     @staticmethod
-    def get_by_omdb_id(omdb_id):
+    def get_by_title(title):
         db = get_db()
-        return db.execute('SELECT * FROM movies WHERE omdb_id = ?', (omdb_id,)).fetchone()
+        return db.execute('SELECT * FROM movies WHERE title = ?', (title,)).fetchone()
 
     @staticmethod
-    def create(omdb_id, title, year=None, type_=None, additional_json=None):
+    def create(title, year=None, genre=None, description=None):
         db = get_db()
         try:
             db.execute(
-                'INSERT INTO movies (omdb_id, title, year, type, additional_json) VALUES (?, ?, ?, ?, ?)',
-                (omdb_id, title, year, type_, additional_json)
+                'INSERT INTO movies (title, year, genre, description) VALUES (?, ?, ?, ?)',
+                (title, year, genre, description)
             )
             db.commit()
         except Exception:
             # ignore duplicates/constraints
             pass
-        return MovieRepository.get_by_omdb_id(omdb_id) if omdb_id else db.execute('SELECT * FROM movies WHERE title = ? ORDER BY id DESC', (title,)).fetchone()
+        return MovieRepository.get_by_title(title)
+
+    @staticmethod
+    def get_all():
+        db = get_db()
+        return db.execute('SELECT * FROM movies ORDER BY title').fetchall()
 
 movie_repository = MovieRepository()
