@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g
 from app.repositories import diary_repository, movie_repository
-from app.auth import login_required
+from .auth import login_required
 
 bp = Blueprint('diary', __name__, url_prefix='/diary')
 

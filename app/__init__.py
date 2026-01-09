@@ -28,15 +28,15 @@ def create_app(test_config=None):
         pass
 
     # --- REGISTRAZIONE BLUEPRINTS ---
-    from . import main
+    from .blueprints import main
     app.register_blueprint(main.bp)
     # --------------------------------
     
-    from . import auth
+    from .blueprints import auth
     app.register_blueprint(auth.bp)
 
     # register new blueprints
-    from . import diary, watchlist, post
+    from .blueprints import diary, watchlist, post
     app.register_blueprint(diary.bp)
     app.register_blueprint(watchlist.bp)
     app.register_blueprint(post.bp)

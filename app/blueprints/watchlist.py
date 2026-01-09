@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, g
 from app.repositories import watchlist_repository, movie_repository
-from app.auth import login_required
+from .auth import login_required
 
 bp = Blueprint('watchlist', __name__, url_prefix='/watchlist')
 
