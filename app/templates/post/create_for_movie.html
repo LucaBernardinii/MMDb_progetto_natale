@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Crea Post{% endblock %}
+
+{% block content %}
+  <h2>✏️ Condividi la tua opinione su: <strong style="color: #667eea;">{{ movie.title }}</strong></h2>
+  
+  <form method="post" style="max-width: 600px;">
+    <div class="form-group">
+      <label for="content">💭 La tua opinione:</label>
+      <textarea name="content" id="content" required placeholder="Condividi cosa ne pensi di questo film..."></textarea>
+    </div>
+    
+    <div style="display: flex; gap: 10px;">
+      <button type="submit" style="flex: 1;">📤 Pubblica</button>
+      <a href="{{ url_for('post.movie_posts', movie_id=movie.id) }}" style="flex: 1; text-align: center; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; display: flex; align-items: center; justify-content: center;">❌ Annulla</a>
+    </div>
+  </form>
+{% endblock %}

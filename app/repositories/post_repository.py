@@ -5,12 +5,12 @@ class PostRepository:
     @staticmethod
     def create_post(user_id, movie_id, content):
         db = get_db()
-        db.execute(
+        cursor = db.execute(
             'INSERT INTO posts (user_id, movie_id, content) VALUES (?, ?, ?)',
             (user_id, movie_id, content)
         )
         db.commit()
-        return db.lastrowid
+        return cursor.lastrowid
 
     @staticmethod
     def get_post_by_id(post_id):
@@ -98,12 +98,12 @@ class PostRepository:
     @staticmethod
     def add_comment(user_id, post_id, content):
         db = get_db()
-        db.execute(
+        cursor = db.execute(
             'INSERT INTO post_comments (user_id, post_id, content) VALUES (?, ?, ?)',
             (user_id, post_id, content)
         )
         db.commit()
-        return db.lastrowid
+        return cursor.lastrowid
 
     @staticmethod
     def get_comments_for_post(post_id):

@@ -3,15 +3,22 @@
 {% block title %}Crea Post{% endblock %}
 
 {% block content %}
-  <h2>Condividi la tua opinione su: <strong>{{ movie.title }}</strong></h2>
+  <h2>✏️ Condividi la tua opinione su un film</h2>
   
   <form method="post" style="max-width: 600px;">
-    <label for="content">La tua opinione:</label>
-    <textarea name="content" id="content" rows="6" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+    <div class="form-group">
+      <label for="title">🎬 Titolo del film:</label>
+      <input type="text" name="title" id="title" required placeholder="Es. Inception, The Matrix...">
+    </div>
     
-    <div style="margin-top: 15px;">
-      <input type="submit" value="Pubblica" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
-      <a href="{{ url_for('post.movie_posts', movie_id=movie.id) }}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">Annulla</a>
+    <div class="form-group">
+      <label for="content">💭 La tua opinione:</label>
+      <textarea name="content" id="content" required placeholder="Condividi cosa ne pensi di questo film..."></textarea>
+    </div>
+    
+    <div style="display: flex; gap: 10px;">
+      <button type="submit" style="flex: 1;">📤 Pubblica</button>
+      <a href="{{ url_for('post.all_posts') }}" style="flex: 1; text-align: center; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; display: flex; align-items: center; justify-content: center;">❌ Annulla</a>
     </div>
   </form>
 {% endblock %}

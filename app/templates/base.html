@@ -3,57 +3,241 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}MMDb - Movie Diary{% endblock %}</title>
-    <!-- Qui potremmo linkare un CSS -->
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        nav a { margin-right: 10px; text-decoration: none; color: blue; }
-        hr { border: 0; border-top: 1px solid #ccc; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            margin: -20px -20px 20px -20px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #f0f0f0;
+            color: #764ba2;
+        }
+
+        nav span {
+            margin-left: auto;
+            font-weight: 500;
+            color: #667eea;
+        }
+
+        .flash {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #dc3545;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .flash.success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        main {
+            padding: 20px 0;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        button, input[type="submit"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        a.btn, a.button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        a.btn:hover, a.button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        input[type="text"], input[type="email"], input[type="password"], 
+        input[type="date"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus,
+        input[type="date"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav span {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <nav>
-        <h1>MMDb - Movie Diary</h1>
-        <!-- url_for genera l'URL dal nome della funzione -->
-        <!-- Sintassi Blueprint: 'nome_blueprint.nome_funzione' -->
-        <a href="{{ url_for('main.index') }}">Home</a>
-        <a href="{{ url_for('main.about') }}">Chi Siamo</a>
-    </nav>
-    <hr>
-    <nav>
-      <a href="{{ url_for('main.index') }}">MMDb</a>
-      {% if g.user %}
-        <!-- Se g.user esiste, l'utente è loggato -->
-        <a href="{{ url_for('diary.index') }}">Diario</a>
-        <a href="{{ url_for('watchlist.index') }}">Watchlist</a>
-        <a href="{{ url_for('post.all_posts') }}">Post</a>
-        <span>Ciao, {{ g.user['username'] }}</span>
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
-      {% else %}
-        <!-- Altrimenti mostriamo i tasti di accesso -->
-        <a href="{{ url_for('post.all_posts') }}">Post</a>
-        <a href="{{ url_for('auth.register') }}">Registrati</a>
-        <a href="{{ url_for('auth.login') }}">Login</a>
-      {% endif %}
-    </nav>
-    
-    <hr>
-    
-    <!-- Zona Messaggi Flash -->
-    {% for message in get_flashed_messages() %}
-        <div class="flash" style="color: red; border: 1px solid red; padding: 10px;">
-            {{ message }}
-        </div>
-    {% endfor %}
-    
-    <!-- Qui mostreremo i messaggi flash (errori/conferme) in futuro -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    <div class="container">
+        <header>
+            <h1>🎬 MMDb - My Movie Database</h1>
+        </header>
+        
+        <nav>
+            <a href="{{ url_for('main.index') }}">🏠 Home</a>
+            {% if g.user %}
+                <a href="{{ url_for('diary.index') }}">📔 Diario</a>
+                <a href="{{ url_for('watchlist.index') }}">📋 Watchlist</a>
+                <a href="{{ url_for('post.all_posts') }}">💬 Post</a>
+                <span>👤 Ciao, <strong>{{ g.user['username'] }}</strong></span>
+                <a href="{{ url_for('auth.logout') }}" style="color: #dc3545;">🚪 Logout</a>
+            {% else %}
+                <a href="{{ url_for('post.all_posts') }}">💬 Post</a>
+                <a href="{{ url_for('auth.register') }}">✏️ Registrati</a>
+                <a href="{{ url_for('auth.login') }}">🔑 Login</a>
+            {% endif %}
+        </nav>
+        
+        {% for message in get_flashed_messages() %}
+            <div class="flash success">
+                ✓ {{ message }}
+            </div>
+        {% endfor %}
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
 
-    <hr>
-    <footer>
-        <small>&copy; 2025 - MMDb</small>
-    </footer>
+        <footer>
+            <small>&copy; 2025 - MMDb</small>
+        </footer>
+    </div>
 </body>
 </html>

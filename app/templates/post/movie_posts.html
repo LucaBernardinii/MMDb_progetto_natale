@@ -3,49 +3,49 @@
 {% block title %}Post su {{ movie.title }}{% endblock %}
 
 {% block content %}
-  <h2>Post su: <strong>{{ movie.title }}</strong></h2>
+  <h2>📽️ Post su: <strong style="color: #667eea;">{{ movie.title }}</strong></h2>
   
   {% if g.user %}
-    <a href="{{ url_for('post.create', movie_id=movie.id) }}" style="padding: 8px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">Crea un post</a>
+    <a href="{{ url_for('post.create_for_movie', movie_id=movie.id) }}" class="btn" style="display: inline-block; margin-bottom: 20px;">✏️ Crea un post</a>
   {% else %}
-    <p><a href="{{ url_for('auth.login') }}">Accedi</a> per condividere la tua opinione su questo film.</p>
+    <p style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+      <a href="{{ url_for('auth.login') }}" style="color: #667eea; text-decoration: none; font-weight: 500;">Accedi</a> per condividere la tua opinione su questo film.
+    </p>
   {% endif %}
   
-  <hr>
-  
   {% if not posts_with_likes %}
-    <p>Nessun post ancora su questo film.</p>
+    <div style="background-color: #e7f3ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 5px; text-align: center;">
+      <p style="margin: 0; color: #667eea;">📽️ Nessun post ancora su questo film.</p>
+    </div>
   {% else %}
-    {% for item in posts_with_likes %}
-      <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
-        <div style="display: flex; justify-content: space-between;">
-          <div>
-            <strong>{{ item.post.username }}</strong>
-            <small style="color: #666;">{{ item.post.created_at }}</small>
-          </div>
-          {% if g.user and g.user.id == item.post.user_id %}
+    <div style="display: grid; gap: 20px;">
+      {% for item in posts_with_likes %}
+        <article style="border: 1px solid #f0f0f0; padding: 20px; border-radius: 8px; background-color: #f9f9f9; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" onmouseover="this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.2)'" onmouseout="this.style.boxShadow='0 2px 5px rgba(0,0,0,0.05)'">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
             <div>
-              <a href="{{ url_for('post.edit', post_id=item.post.id) }}" style="text-decoration: none;">✏️</a>
-              <form method="POST" action="{{ url_for('post.delete', post_id=item.post.id) }}" style="display: inline;" onsubmit="return confirm('Sei sicuro?');">
-                <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 16px;">🗑️</button>
-              </form>
+              <strong style="color: #667eea;">👤 {{ item.post.username }}</strong>
+              <small style="color: #999; display: block; margin-top: 5px;">📅 {{ item.post.created_at }}</small>
             </div>
-          {% endif %}
-        </div>
-        
-        <p style="margin-top: 10px;">{{ item.post.content }}</p>
-        
-        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
-          {% if g.user %}
-            <form method="POST" action="{{ url_for('post.like', post_id=item.post.id) }}" style="display: inline;">
-              <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 16px;">
-                {% if item.user_liked %}👍{% else %}🤍{% endif %}
-              </button>
-            </form>
-          {% endif %}
-          <small>{{ item.likes_count }} like | <a href="{{ url_for('post.view', post_id=item.post.id) }}">{{ item.comments_count }} commenti</a></small>
-        </div>
-      </div>
-    {% endfor %}
+            {% if g.user and g.user.id == item.post.user_id %}
+              <div style="display: flex; gap: 10px;">
+                <a href="{{ url_for('post.edit', post_id=item.post.id) }}" style="padding: 6px 10px; background-color: #667eea; color: white; text-decoration: none; border-radius: 4px; font-size: 12px;">✏️</a>
+                <form method="POST" action="{{ url_for('post.delete', post_id=item.post.id) }}" style="display: inline;" onsubmit="return confirm('Sei sicuro?');">
+                  <button type="submit" style="padding: 6px 10px; background-color: #dc3545; font-size: 12px;">🗑️</button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+          
+          <p style="margin: 15px 0; line-height: 1.6; color: #555;">{{ item.post.content }}</p>
+          
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+            <small style="color: #999;">
+              👍 <strong>{{ item.likes_count }}</strong> like • 💬 <strong>{{ item.comments_count }}</strong> commenti
+            </small>
+            <a href="{{ url_for('post.view', post_id=item.post.id) }}" style="color: #667eea; text-decoration: none; font-weight: 500;">Leggi →</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
   {% endif %}
 {% endblock %}

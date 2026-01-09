@@ -8,8 +8,6 @@
 
   {% if g.user %}
     <p>Benvenuto, {{ g.user['username'] }} — hai {{ stats.get('diary_count', 0) }} voci nel diario e {{ stats.get('watchlist_count', 0) }} elementi nella watchlist.</p>
-    <a href="{{ url_for('diary.index') }}">Vai al Diario</a> |
-    <a href="{{ url_for('watchlist.index') }}">Vai alla Watchlist</a>
   {% else %}
     <p><a href="{{ url_for('auth.register') }}">Registrati</a> o <a href="{{ url_for('auth.login') }}">accedi</a> per iniziare.</p>
   {% endif %}

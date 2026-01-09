@@ -6,7 +6,15 @@ bp = Blueprint('post', __name__, url_prefix='/post')
 
 @bp.route('/')
 def all_posts():
-    posts = post_repository.get_all_posts()
+    search = request.args.get('search', '').strip()
+    
+    if search:
+        posts = post_repository.get_all_posts()
+        # Filtrare i post in base al titolo del film
+        posts = [p for p in posts if search.lower() in p['title'].lower()]
+    else:
+        posts = post_repository.get_all_posts()
+    
     posts_with_likes = []
     for post in posts:
         likes_count = post_repository.get_likes_count(post['id'])
@@ -18,7 +26,7 @@ def all_posts():
             'user_liked': user_liked,
             'comments_count': len(comments)
         })
-    return render_template('post/index.html', posts_with_likes=posts_with_likes)
+    return render_template('post/index.html', posts_with_likes=posts_with_likes, search=search)
 
 @bp.route('/movie/<int:movie_id>')
 def movie_posts(movie_id):
@@ -41,9 +49,32 @@ def movie_posts(movie_id):
         })
     return render_template('post/movie_posts.html', movie=movie, posts_with_likes=posts_with_likes)
 
+@bp.route('/create', methods=('GET', 'POST'))
+@login_required
+def create():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        content = request.form.get('content')
+        
+        if not title:
+            flash('Il titolo del film è obbligatorio.')
+        elif not content:
+            flash('Il contenuto del post è obbligatorio.')
+        else:
+            # Find or create movie
+            movie = movie_repository.get_by_title(title)
+            if movie is None:
+                movie = movie_repository.create(title)
+            
+            post_repository.create_post(g.user['id'], movie['id'], content)
+            flash('Post creato con successo!')
+            return redirect(url_for('post.movie_posts', movie_id=movie['id']))
+    
+    return render_template('post/create.html')
+
 @bp.route('/create/<int:movie_id>', methods=('GET', 'POST'))
 @login_required
-def create(movie_id):
+def create_for_movie(movie_id):
     movie = movie_repository.get_by_id(movie_id)
     if not movie:
         flash('Film non trovato.')
@@ -59,7 +90,7 @@ def create(movie_id):
             flash('Post creato con successo!')
             return redirect(url_for('post.movie_posts', movie_id=movie_id))
     
-    return render_template('post/create.html', movie=movie)
+    return render_template('post/create_for_movie.html', movie=movie)
 
 @bp.route('/<int:post_id>')
 def view(post_id):

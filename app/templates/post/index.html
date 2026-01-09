@@ -3,24 +3,58 @@
 {% block title %}Tutti i Post{% endblock %}
 
 {% block content %}
-  <h2>Condivisioni e Opinioni sui Film</h2>
+  <h2>💬 Condividi opinioni sui Film</h2>
+  
+  {% if g.user %}
+    <a href="{{ url_for('post.create') }}" class="btn" style="display: inline-block; margin-bottom: 20px;">✏️ Crea un post</a>
+  {% else %}
+    <p style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+      <a href="{{ url_for('auth.login') }}" style="color: #667eea; text-decoration: none; font-weight: 500;">Accedi</a> per condividere la tua opinione.
+    </p>
+  {% endif %}
+  
+  <div style="margin-bottom: 20px;">
+    <form method="get" style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <input type="text" name="search" placeholder="🔍 Filtra per titolo film..." value="{{ search }}" style="flex: 1; min-width: 250px;">
+      <button type="submit" style="padding: 10px 20px;">Cerca</button>
+      {% if search %}
+        <a href="{{ url_for('post.all_posts') }}" style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px; display: inline-flex; align-items: center; cursor: pointer;">✕ Cancella</a>
+      {% endif %}
+    </form>
+  </div>
   
   {% if not posts_with_likes %}
-    <p>Nessun post ancora. Sii il primo a condividere!</p>
+    <div style="background-color: #e7f3ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 5px; text-align: center;">
+      <p style="margin: 0; color: #667eea;">
+        {% if search %}
+          🔍 Nessun post trovato per "<strong>{{ search }}</strong>".
+        {% else %}
+          📽️ Nessun post ancora. Sii il primo a condividere!
+        {% endif %}
+      </p>
+    </div>
   {% else %}
-    {% for item in posts_with_likes %}
-      <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
-        <h4><a href="{{ url_for('post.view', post_id=item.post.id) }}">{{ item.post.title }}</a></h4>
-        <small>di <strong>{{ item.post.username }}</strong> il {{ item.post.created_at }}</small>
-        
-        <p>{{ item.post.content }}</p>
-        
-        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
-          <small>
-            👍 {{ item.likes_count }} like | 💬 {{ item.comments_count }} commenti
+    <div style="display: grid; gap: 20px;">
+      {% for item in posts_with_likes %}
+        <article style="border: 1px solid #f0f0f0; padding: 20px; border-radius: 8px; background-color: #f9f9f9; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);" onmouseover="this.style.boxShadow='0 5px 15px rgba(102, 126, 234, 0.2)'" onmouseout="this.style.boxShadow='0 2px 5px rgba(0,0,0,0.05)'">
+          <h4 style="margin: 0 0 10px 0;">
+            <a href="{{ url_for('post.view', post_id=item.post.id) }}" style="color: #667eea; text-decoration: none;">{{ item.post.title }}</a>
+          </h4>
+          <small style="color: #999;">
+            👤 <strong>{{ item.post.username }}</strong> • 📅 {{ item.post.created_at }}
           </small>
-        </div>
-      </div>
-    {% endfor %}
+          
+          <p style="margin: 15px 0; line-height: 1.6; color: #555;">{{ item.post.content }}</p>
+          
+          <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+            <small style="color: #999;">
+              👍 <strong>{{ item.likes_count }}</strong> like • 💬 <strong>{{ item.comments_count }}</strong> commenti
+            </small>
+            <a href="{{ url_for('post.view', post_id=item.post.id) }}" style="color: #667eea; text-decoration: none; font-weight: 500;">Leggi →</a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
   {% endif %}
 {% endblock %}
+
