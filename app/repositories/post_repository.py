@@ -56,11 +56,8 @@ class PostRepository:
     @staticmethod
     def delete_post(post_id):
         db = get_db()
-        # Delete comments first due to foreign key
         db.execute('DELETE FROM post_comments WHERE post_id = ?', (post_id,))
-        # Delete likes
         db.execute('DELETE FROM post_likes WHERE post_id = ?', (post_id,))
-        # Delete post
         db.execute('DELETE FROM posts WHERE id = ?', (post_id,))
         db.commit()
 

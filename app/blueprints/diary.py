@@ -22,7 +22,6 @@ def add():
         if not title or not watched_on:
             flash('Titolo e data sono obbligatori.')
         else:
-            # find or create movie
             movie = movie_repository.get_by_title(title)
             if movie is None:
                 movie = movie_repository.create(title)

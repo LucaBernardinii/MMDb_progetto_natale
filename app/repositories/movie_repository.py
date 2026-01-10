@@ -21,7 +21,6 @@ class MovieRepository:
             )
             db.commit()
         except Exception:
-            # ignore duplicates/constraints
             pass
         return MovieRepository.get_by_title(title)
 

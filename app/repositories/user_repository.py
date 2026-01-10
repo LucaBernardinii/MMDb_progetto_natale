@@ -1,8 +1,6 @@
-# Importiamo la nostra funzione per prendere la connessione
 from app.db import get_db
 import sqlite3
 
-# Lo schema definisce la tabella 'users' con colonna 'password_hash'
 
 def create_user(username, password_hash, email):
     """Inserisce un nuovo utente (username, email, password_hash)."""
@@ -12,10 +10,9 @@ def create_user(username, password_hash, email):
             "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
             (username, email, password_hash),
         )
-        db.commit() # Salviamo le modifiche
+        db.commit()
         return True
     except sqlite3.IntegrityError:
-        # Errore: lo username o l'email esistono già
         return False
 
 def get_user_by_username(username):

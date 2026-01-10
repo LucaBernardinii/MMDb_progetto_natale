@@ -1,4 +1,3 @@
-# Repositories package
 from . import user_repository
 from .movie_repository import movie_repository
 from .diary_repository import diary_repository

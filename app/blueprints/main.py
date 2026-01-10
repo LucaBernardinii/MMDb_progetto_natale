@@ -3,12 +3,11 @@ from flask import (
 )
 from app.repositories import diary_repository, watchlist_repository
 
-# Usiamo 'main' perché è il blueprint principale del sito
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
 def index():
-    # Mostra la dashboard MMDb. Se l'utente è loggato, mostra conteggi personali.
+    # Mostra la dashboard
     stats = {}
 
     if g.user:

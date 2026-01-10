@@ -10,7 +10,7 @@ def all_posts():
     
     if search:
         posts = post_repository.get_all_posts()
-        # Filtrare i post in base al titolo del film
+        # Filtra i post in base al titolo del film
         posts = [p for p in posts if search.lower() in p['title'].lower()]
     else:
         posts = post_repository.get_all_posts()
@@ -61,7 +61,6 @@ def create():
         elif not content:
             flash('Il contenuto del post è obbligatorio.')
         else:
-            # Find or create movie
             movie = movie_repository.get_by_title(title)
             if movie is None:
                 movie = movie_repository.create(title)
