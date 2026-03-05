@@ -1,6 +1,10 @@
 # Importiamo la funzione create_app dal pacchetto 'app'
 # Questo è possibile perché 'app' ha un file __init__.py!
 from app import create_app
+from dotenv import load_dotenv # Importa la libreria
+
+# Carica le variabili dal file .env
+load_dotenv()
 
 # Chiamiamo la fabbrica per ottenere l'applicazione
 app = create_app()
